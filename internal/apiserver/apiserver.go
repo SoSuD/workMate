@@ -1,6 +1,8 @@
 package apiserver
 
 import (
+	"fmt"
+	"log"
 	"workMate/internal/store"
 	"workMate/internal/store/mapstore"
 )
@@ -8,7 +10,9 @@ import (
 func Start(config Config) {
 	srv := NewServer(NewDB(), config)
 	srv.configureRouter()
-	srv.router.Run(":8080")
+	if err := srv.router.Run(fmt.Sprintf(":%s", config.Server.Port)); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func NewDB() store.Store {
