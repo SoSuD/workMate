@@ -106,10 +106,11 @@ func (s *Server) createTask(c *gin.Context) {
 }
 
 type getTaskResponse struct {
-	Name       string    `json:"name"`
-	CreatedAt  time.Time `json:"created_at"`
-	FinishedAt time.Time `json:"finished_at,omitzero"`
-	Status     string    `json:"status"`
+	Name            string    `json:"name"`
+	CreatedAt       time.Time `json:"created_at"`
+	ProcessDuration float64   `json:"process_duration"`
+	FinishedAt      time.Time `json:"finished_at,omitzero"`
+	Status          string    `json:"status"`
 }
 
 func (s *Server) getTask(c *gin.Context) {
@@ -128,6 +129,7 @@ func (s *Server) getTask(c *gin.Context) {
 	var res getTaskResponse
 	res.Name = task.Name
 	res.CreatedAt = task.CreatedAt
+	res.ProcessDuration = time.Since(task.CreatedAt).Round(time.Millisecond).Seconds()
 	res.Status = task.Status
 	res.FinishedAt = task.FinishedAt
 	c.JSON(http.StatusOK, res)
